@@ -3,28 +3,25 @@ package main
 func mergeSortedChannels(ch1, ch2 chan int) chan int {
 }
 
-func fillCh1(ch chan int) {
-	ch <- 1
-	ch <- 3
-	ch <- 4
-	close(ch)
+func fillChannel(input []int) chan int {
+	out := make(chan int)
 
-}
+	go func() {
+		for _, value := range input {
+			out <- value
+		}
+		close(out)
+	}()
 
-func fillCh2(ch chan int) {
-	ch <- -3
-	ch <- 1
-	ch <- 10
-	close(ch)
-
+	return out
 }
 
 func main() {
-	ch1 := make(chan int)
-	ch2 := make(chan int)
+	in1 := []int{1, 3, 4, 5}
+	in2 := []int{-3, 1, 10}
 
-	go fillCh1(ch1)
-	go fillCh2(ch2)
+	ch1 := fillChannel(in1)
+	ch2 := fillChannel(in2)
 	outMergChan := mergeSortedChannels(ch1, ch2)
 
 }
